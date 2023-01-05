@@ -11,5 +11,5 @@
 }
 
 .swv-button-trigger {
-    @apply bg-blue-500 justify-center !important;
+    @apply bg-purple-500 justify-center !important;
 }
