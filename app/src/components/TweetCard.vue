@@ -35,7 +35,7 @@ const authorRoute = computed(() => {
         </div>
         <p class="whitespace-pre-wrap" v-text="tweet.content"></p>
         <router-link v-if="tweet.topic" :to="{ name: 'Topics', params: { topic: tweet.topic } }"
-            class="inline-block mt-2 text-purple-500 hover:underline">
+            class="inline-block mt-2 text-yellow-500 hover:underline">
             #{{ tweet.topic }}
         </router-link>
     </div>
