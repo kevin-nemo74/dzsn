@@ -24,7 +24,7 @@ useAutoresizeTextarea(textarea)
 const characterLimit = useCountCharacterLimit(content, 280)
 const characterLimitColour = computed(() => {
     if (characterLimit.value < 0) return 'text-red-500'
-    if (characterLimit.value <= 10) return 'text-yellow-500'
+    if (characterLimit.value <= 10) return 'text-green-500'
     return 'text-gray-400'
 })
 
