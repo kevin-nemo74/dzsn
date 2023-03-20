@@ -1,14 +1,14 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
-declare_id!("6z1rvxkbh7BspmLoASFCPsMka3eBSEuhdfEjBUXVdcGN");
+declare_id!("GCMqr3FDRdq8RukgS6P799A3buB7dvd6zxpXzJSXEJmq");
 
 #[program]
 pub mod solana_twitter {
     use super::*;
     pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> ProgramResult {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
-        let author: &InfallibleSigner = &ctx.accounts.author;
+        let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
 
         if topic.chars().count() > 50 {
@@ -33,9 +33,10 @@ pub mod solana_twitter {
 pub struct SendTweet<'info> {
     #[account(init, payer = author, space = Tweet::LEN)]
     pub tweet: Account<'info, Tweet>,
-    #[account(mut, signer = author, signer_type = InfallibleSigner<'info>)]
-    pub author: InfallibleSigner<'info>,
+    #[account(mut)]
+    pub author: Signer<'info>,
     #[account(address = system_program::ID)]
+    /// CHECK:` doc comment explaining why no checks through types are necessary.
     pub system_program: AccountInfo<'info>,
 }
 
@@ -50,16 +51,16 @@ pub struct Tweet {
 const DISCRIMINATOR_LENGTH: usize = 8;
 const PUBLIC_KEY_LENGTH: usize = 32;
 const TIMESTAMP_LENGTH: usize = 8;
-const STRING_LENGTH_PREFIX: usize = 4;
-const MAX_TOPIC_LENGTH: usize = 50 * 4;
-const MAX_CONTENT_LENGTH: usize = 280 * 4;
+const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
+const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
+const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
 
 impl Tweet {
     const LEN: usize = DISCRIMINATOR_LENGTH
-        + PUBLIC_KEY_LENGTH
-        + TIMESTAMP_LENGTH
-        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH;
+        + PUBLIC_KEY_LENGTH // Author.
+        + TIMESTAMP_LENGTH // Timestamp.
+        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
+        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH; // Content.
 }
 
 #[error]
